@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Landing Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6">My Library</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Currently Reading Section -->
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="text-2xl font-semibold mb-4">Currently Reading</h2>
+                <div id="reading-links" class="space-y-4"></div>
+                <form id="add-reading-link-form" class="mt-4">
+                    <input type="url" id="reading-url" class="border p-2 w-full mb-2" placeholder="URL" required>
+                    <input type="text" id="reading-title" class="border p-2 w-full mb-2" placeholder="Page Title" required>
+                    <select id="reading-topic" class="border p-2 w-full mb-2" required>
+                        <option value="" disabled selected>Topic</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Science">Science</option>
+                        <option value="Education">Education</option>
+                        <!-- Add more topics as needed -->
+                    </select>
+                    <textarea id="reading-notes" class="border p-2 w-full mb-2" placeholder="Notes"></textarea>
+                    <button type="submit" class="bg-blue-500 text-white p-2 w-full rounded">Add Link</button>
+                </form>
+                <div class="mt-4">
+                    <label for="reading-filter" class="block">Filter by topic:</label>
+                    <select id="reading-filter" class="border p-2 w-full">
+                        <option value="">All</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Science">Science</option>
+                        <option value="Education">Education</option>
+                        <!-- Add more topics as needed -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Other Links Section -->
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="text-2xl font-semibold mb-4">Other Links</h2>
+                <div id="other-links" class="space-y-4"></div>
+                <form id="add-other-link-form" class="mt-4">
+                    <input type="url" id="other-url" class="border p-2 w-full mb-2" placeholder="URL" required>
+                    <input type="text" id="other-title" class="border p-2 w-full mb-2" placeholder="Page Title" required>
+                    <select id="other-topic" class="border p-2 w-full mb-2" required>
+                        <option value="" disabled selected>Topic</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Science">Science</option>
+                        <option value="Education">Education</option>
+                        <!-- Add more topics as needed -->
+                    </select>
+                    <textarea id="other-notes" class="border p-2 w-full mb-2" placeholder="Notes"></textarea>
+                    <button type="submit" class="bg-blue-500 text-white p-2 w-full rounded">Add Link</button>
+                </form>
+                <div class="mt-4">
+                    <label for="other-filter" class="block">Filter by topic:</label>
+                    <select id="other-filter" class="border p-2 w-full">
+                        <option value="">All</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Science">Science</option>
+                        <option value="Education">Education</option>
+                        <!-- Add more topics as needed -->
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
