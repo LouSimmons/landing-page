@@ -15,10 +15,9 @@
             <label for="filter" class="block text-lg font-medium text-gray-700">Filter by Topic Tag</label>
             <select id="filter" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option value="all">All</option>
-                <option value="programming">Programming</option>
-                <option value="design">Design</option>
-                <option value="news">News</option>
             </select>
+            <button id="addTopicBtn" class="mt-2 w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-700">Add Topic Tag</button>
+            <button id="deleteTopicBtn" class="mt-2 w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Delete Topic Tag</button>
         </div>
 
         <!-- Gallery Section -->
@@ -39,9 +38,6 @@
                 <div class="mb-4">
                     <label for="topic" class="block text-lg font-medium text-gray-700">Topic Tag</label>
                     <select id="topic" name="topic" required class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="programming">Programming</option>
-                        <option value="design">Design</option>
-                        <option value="news">News</option>
                     </select>
                 </div>
                 <div class="mb-4">
@@ -55,6 +51,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            loadTopics();
             loadEntries();
 
             document.getElementById('filter').addEventListener('change', function() {
@@ -77,6 +74,20 @@
                 const notes = document.getElementById('notes').value;
                 addEntry(url, title, topic, notes);
                 this.reset();
+            });
+
+            document.getElementById('addTopicBtn').addEventListener('click', function() {
+                const newTopic = prompt('Enter new topic tag:');
+                if (newTopic) {
+                    addTopic(newTopic);
+                }
+            });
+
+            document.getElementById('deleteTopicBtn').addEventListener('click', function() {
+                const deleteTopic = prompt('Enter topic tag to delete:');
+                if (deleteTopic) {
+                    deleteTopicTag(deleteTopic);
+                }
             });
         });
 
@@ -117,6 +128,59 @@
             const newEntries = entries.filter(e => e.url !== url);
             saveEntries(newEntries);
             entry.remove();
+        }
+
+        function loadTopics() {
+            const topics = JSON.parse(localStorage.getItem('topics')) || ['programming', 'design', 'news'];
+            const topicSelects = document.querySelectorAll('#filter, #topic');
+            topics.forEach(topic => {
+                topicSelects.forEach(select => {
+                    const option = document.createElement('option');
+                    option.value = topic;
+                    option.textContent = topic.charAt(0).toUpperCase() + topic.slice(1);
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function saveTopics(topics) {
+            localStorage.setItem('topics', JSON.stringify(topics));
+        }
+
+        function addTopic(newTopic) {
+            const topics = JSON.parse(localStorage.getItem('topics')) || [];
+            if (!topics.includes(newTopic)) {
+                topics.push(newTopic);
+                saveTopics(topics);
+                loadTopicOptions();
+            } else {
+                alert('Topic already exists.');
+            }
+        }
+
+        function deleteTopicTag(topic) {
+            let topics = JSON.parse(localStorage.getItem('topics')) || [];
+            topics = topics.filter(t => t !== topic);
+            saveTopics(topics);
+            loadTopicOptions();
+        }
+
+        function loadTopicOptions() {
+            const topics = JSON.parse(localStorage.getItem('topics')) || [];
+            const topicSelects = document.querySelectorAll('#filter, #topic');
+            topicSelects.forEach(select => {
+                select.innerHTML = '';
+                const defaultOption = document.createElement('option');
+                defaultOption.value = 'all';
+                defaultOption.textContent = 'All';
+                select.appendChild(defaultOption);
+                topics.forEach(topic => {
+                    const option = document.createElement('option');
+                    option.value = topic;
+                    option.textContent = topic.charAt(0).toUpperCase() + topic.slice(1);
+                    select.appendChild(option);
+                });
+            });
         }
     </script>
 </body>
