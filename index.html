@@ -22,32 +22,7 @@
         </div>
 
         <!-- Gallery Section -->
-        <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Sample Entry 1 -->
-            <div class="bg-white p-4 rounded-lg shadow-md" data-topic="programming">
-                <h2 class="text-xl font-bold">Sample Title 1</h2>
-                <p class="text-sm text-gray-500">URL: <a href="https://example.com" class="text-blue-500">https://example.com</a></p>
-                <p class="text-sm text-gray-500">Topic: Programming</p>
-                <p class="text-sm text-gray-500">Notes: This is a sample note.</p>
-                <button class="mt-2 text-red-500 hover:text-red-700" onclick="deleteEntry(this)">Delete</button>
-            </div>
-            <!-- Sample Entry 2 -->
-            <div class="bg-white p-4 rounded-lg shadow-md" data-topic="design">
-                <h2 class="text-xl font-bold">Sample Title 2</h2>
-                <p class="text-sm text-gray-500">URL: <a href="https://example.com" class="text-blue-500">https://example.com</a></p>
-                <p class="text-sm text-gray-500">Topic: Design</p>
-                <p class="text-sm text-gray-500">Notes: This is another sample note.</p>
-                <button class="mt-2 text-red-500 hover:text-red-700" onclick="deleteEntry(this)">Delete</button>
-            </div>
-            <!-- Sample Entry 3 -->
-            <div class="bg-white p-4 rounded-lg shadow-md" data-topic="news">
-                <h2 class="text-xl font-bold">Sample Title 3</h2>
-                <p class="text-sm text-gray-500">URL: <a href="https://example.com" class="text-blue-500">https://example.com</a></p>
-                <p class="text-sm text-gray-500">Topic: News</p>
-                <p class="text-sm text-gray-500">Notes: This is yet another sample note.</p>
-                <button class="mt-2 text-red-500 hover:text-red-700" onclick="deleteEntry(this)">Delete</button>
-            </div>
-        </div>
+        <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
         <!-- Form Section -->
         <div class="mt-8">
@@ -79,29 +54,42 @@
     </div>
 
     <script>
-        document.getElementById('filter').addEventListener('change', function() {
-            const selectedTopic = this.value;
-            const entries = document.querySelectorAll('#gallery > div');
-            entries.forEach(entry => {
-                if (selectedTopic === 'all' || entry.dataset.topic === selectedTopic) {
-                    entry.style.display = 'block';
-                } else {
-                    entry.style.display = 'none';
-                }
+        document.addEventListener('DOMContentLoaded', () => {
+            loadEntries();
+
+            document.getElementById('filter').addEventListener('change', function() {
+                const selectedTopic = this.value;
+                const entries = document.querySelectorAll('#gallery > div');
+                entries.forEach(entry => {
+                    if (selectedTopic === 'all' || entry.dataset.topic === selectedTopic) {
+                        entry.style.display = 'block';
+                    } else {
+                        entry.style.display = 'none';
+                    }
+                });
+            });
+
+            document.getElementById('bookmarkForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const url = document.getElementById('url').value;
+                const title = document.getElementById('title').value;
+                const topic = document.getElementById('topic').value;
+                const notes = document.getElementById('notes').value;
+                addEntry(url, title, topic, notes);
+                this.reset();
             });
         });
 
-        document.getElementById('bookmarkForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const url = document.getElementById('url').value;
-            const title = document.getElementById('title').value;
-            const topic = document.getElementById('topic').value;
-            const notes = document.getElementById('notes').value;
-            addEntry(url, title, topic, notes);
-            this.reset();
-        });
+        function loadEntries() {
+            const entries = JSON.parse(localStorage.getItem('entries')) || [];
+            entries.forEach(entry => addEntry(entry.url, entry.title, entry.topic, entry.notes, false));
+        }
 
-        function addEntry(url, title, topic, notes) {
+        function saveEntries(entries) {
+            localStorage.setItem('entries', JSON.stringify(entries));
+        }
+
+        function addEntry(url, title, topic, notes, save = true) {
             const gallery = document.getElementById('gallery');
             const entry = document.createElement('div');
             entry.className = 'bg-white p-4 rounded-lg shadow-md';
@@ -114,10 +102,21 @@
                 <button class="mt-2 text-red-500 hover:text-red-700" onclick="deleteEntry(this)">Delete</button>
             `;
             gallery.appendChild(entry);
+
+            if (save) {
+                const entries = JSON.parse(localStorage.getItem('entries')) || [];
+                entries.push({ url, title, topic, notes });
+                saveEntries(entries);
+            }
         }
 
         function deleteEntry(button) {
-            button.parentElement.remove();
+            const entry = button.parentElement;
+            const url = entry.querySelector('a').href;
+            const entries = JSON.parse(localStorage.getItem('entries')) || [];
+            const newEntries = entries.filter(e => e.url !== url);
+            saveEntries(newEntries);
+            entry.remove();
         }
     </script>
 </body>
